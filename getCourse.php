@@ -2,6 +2,40 @@
 // Include the database connection
 include 'config.php';  // Ensure this contains correct database connection details
 
+// Handle add course request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['update_id']) && !isset($_POST['delete_id'])) {
+    $title = trim($_POST['title']);
+    $duration = trim($_POST['duration_in_hours']);
+    $level = trim($_POST['level']);
+    $price = trim($_POST['price']);
+    $category = trim($_POST['category']);
+
+    // Check if course already exists
+    $checkSql = "SELECT id FROM Course WHERE title = ?";
+    $stmt = $conn->prepare($checkSql);
+    $stmt->bind_param("s", $title);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        echo "<script>alert('A course with this title already exists!');</script>";
+    } else {
+        // Add new course
+        $insertSql = "INSERT INTO Course (instructor_id, title, image, duration_in_hours, level, price, category) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($insertSql);
+        $instructor_id = 1; // You might want to get this from the session
+        $image = "default.jpg"; // Default image or handle image upload
+        $stmt->bind_param("issssss", $instructor_id, $title, $image, $duration, $level, $price, $category);
+        
+        if ($stmt->execute()) {
+            header("Location: getCourse.php");
+            exit();
+        } else {
+            echo "<script>alert('Error adding course: " . $stmt->error . "');</script>";
+        }
+    }
+}
+
 // SQL query to get all courses
 $sql = "SELECT * FROM Course";
 $result = $conn->query($sql);
@@ -33,96 +67,11 @@ if (isset($_POST['update_id'])) {
     header("Location: getCourse.php");
     exit();
 }
-?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Courses</title>
-    <style>
-        /* Same modal styles as in getUser.php */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background-color: white;
-            margin: 15% auto;
-            padding: 20px;
-            width: 70%;
-            max-width: 500px;
-            border-radius: 5px;
-        }
-        .modal-content form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .modal-content input {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .button-group {
-            display: flex;
-            gap: 10px;
-        }
-        .edit-btn, .delete-btn {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .edit-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .delete-btn {
-            background-color: #f44336;
-            color: white;
-        }
-        .modal-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .modal-buttons button {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .confirm-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .cancel-btn {
-            background-color: #f44336;
-            color: white;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <nav class="sidebar">
-            <ul>
-                <li><a href="adminHomePage.php">Home</a></li>
-                <li><a href="getUser.php">Users</a></li>
-                <li><a href="getCourse.php">Courses</a></li>
-                <li><a href="getLesson.php">Lessons</a></li>
-            </ul>
-        </nav>
-        <div class="content">
+include 'header.php';
+?>
             <h1>Course List</h1>
+            <a href="#" class="action-button" onclick="showAddModal()">Add New Course</a>
             <?php if ($result->num_rows > 0): ?>
                 <table>
                     <thead>
@@ -197,6 +146,29 @@ if (isset($_POST['update_id'])) {
         </div>
     </div>
 
+    <!-- Add Course Modal -->
+    <div id="addCourseModal" class="modal">
+        <div class="modal-content">
+            <h2>Add New Course</h2>
+            <form id="addCourseForm" method="POST" onsubmit="return validateForm()">
+                <input type="text" id="title" name="title" placeholder="Course Title" required>
+                <input type="text" id="duration" name="duration_in_hours" placeholder="Duration (Hours)" required>
+                <select name="level" id="level" required>
+                    <option value="">Select Level</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                </select>
+                <input type="number" id="price" name="price" placeholder="Price" required>
+                <input type="text" id="category" name="category" placeholder="Category" required>
+                <div class="modal-buttons">
+                    <button type="button" class="cancel-btn" onclick="hideAddModal()">Cancel</button>
+                    <button type="submit" class="confirm-btn">Add Course</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         function showEditModal(data) {
             document.getElementById('editModal').style.display = 'block';
@@ -219,6 +191,32 @@ if (isset($_POST['update_id'])) {
 
         function hideDeleteModal() {
             document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        // Show/Hide Modal
+        function showAddModal() {
+            document.getElementById('addCourseModal').style.display = 'block';
+        }
+
+        function hideAddModal() {
+            document.getElementById('addCourseModal').style.display = 'none';
+            document.getElementById('addCourseForm').reset();
+        }
+
+        // Validate Form
+        function validateForm() {
+            const title = document.getElementById('title').value.trim();
+            const duration = document.getElementById('duration').value.trim();
+            const level = document.getElementById('level').value;
+            const price = document.getElementById('price').value.trim();
+            const category = document.getElementById('category').value.trim();
+
+            if (!title || !duration || !level || !price || !category) {
+                alert('Please fill in all fields');
+                return false;
+            }
+
+            return true;
         }
 
         // Close modals when clicking outside

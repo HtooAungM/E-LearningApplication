@@ -6,34 +6,14 @@ $studentCount = $conn->query("SELECT COUNT(*) as count FROM Student")->fetch_ass
 $courseCount = $conn->query("SELECT COUNT(*) as count FROM Course")->fetch_assoc()['count'];
 $enrollmentCount = $conn->query("SELECT COUNT(*) as count FROM Enrollment")->fetch_assoc()['count'];
 
-$conn->close();
+include 'header.php';
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn2gether - Admin Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <nav class="sidebar">
-            <ul>
-                <li><a href="adminHomePage.php">Home</a></li>
-                <li><a href="getUser.php">Users</a></li>
-                <li><a href="getCourse.php">Courses</a></li>
-                <li><a href="getLesson.php">Lessons</a></li>
-            </ul>
-        </nav>
-        <div class="content">
             <h1 class="welcome-message">Welcome to Learn2gether Admin Dashboard</h1>
             
             <div class="stats-container">
                 <div class="stat-card users">
                     <div class="stat-icon"></div>
-                    <h2>Total Users</h2>
+                    <h2>Total Students</h2>
                     <div class="stat-number"><?php echo $studentCount; ?></div>
                     <p>Registered students</p>
                 </div>
@@ -56,3 +36,4 @@ $conn->close();
     </div>
 </body>
 </html>
+<?php $conn->close(); ?>

@@ -93,6 +93,55 @@ if ($conn->query($enrollmentTable) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
+
+// Create Quiz table
+$sql = "CREATE TABLE IF NOT EXISTS Quiz (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL
+)";
+
+if ($conn->query($sql) === TRUE) {
+    echo "Quiz table created successfully<br>";
+} else {
+    echo "Error creating Quiz table: " . $conn->error . "<br>";
+}
+
+$questionTable = "CREATE TABLE IF NOT EXISTS Question (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    quiz_id INT NOT NULL,
+    question_text TEXT NOT NULL,
+    option1 VARCHAR(255) NOT NULL,
+    option2 VARCHAR(255) NOT NULL,
+    option3 VARCHAR(255) NOT NULL,
+    option4 VARCHAR(255) NOT NULL,
+    correct_answer VARCHAR(255) NOT NULL,
+    FOREIGN KEY (quiz_id) REFERENCES Quiz(id) ON DELETE CASCADE
+)";
+
+// Execute the query
+if ($conn->query($questionTable) === TRUE) {
+    echo "Table 'Question' created successfully.";   
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
+$answerTable = "CREATE TABLE IF NOT EXISTS Answer (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    question_id INT NOT NULL,
+    answer_text TEXT NOT NULL,
+    is_correct BOOLEAN NOT NULL,
+    FOREIGN KEY (student_id) REFERENCES Student(id),
+    FOREIGN KEY (question_id) REFERENCES Question(id)
+)";
+
+// Execute the query
+if ($conn->query($answerTable) === TRUE) {
+    echo "Table 'Answer' created successfully.";   
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
 // Close the connection
 $conn->close();
 ?>

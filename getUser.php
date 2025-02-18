@@ -33,94 +33,9 @@ if (isset($_POST['update_id'])) {
     header("Location: getUser.php");
     exit();
 }
-?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Users</title>
-    <style>
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background-color: white;
-            margin: 15% auto;
-            padding: 20px;
-            width: 70%;
-            max-width: 500px;
-            border-radius: 5px;
-        }
-        .modal-content form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .modal-content input {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .button-group {
-            display: flex;
-            gap: 10px;
-        }
-        .edit-btn, .delete-btn {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .edit-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .delete-btn {
-            background-color: #f44336;
-            color: white;
-        }
-        .modal-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .modal-buttons button {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .confirm-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .cancel-btn {
-            background-color: #f44336;
-            color: white;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <nav class="sidebar">
-            <ul>
-                <li><a href="adminHomePage.php">Home</a></li>
-                <li><a href="getUser.php">Users</a></li>
-                <li><a href="getCourse.php">Courses</a></li>
-                <li><a href="getLesson.php">Lessons</a></li>
-            </ul>
-        </nav>
-        <div class="content">
+include 'header.php';
+?>
             <h1>Student List</h1>
             <?php if ($result->num_rows > 0): ?>
                 <table>
