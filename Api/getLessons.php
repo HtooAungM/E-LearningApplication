@@ -10,10 +10,7 @@ if (!isset($_GET['course_id'])) {
 $course_id = $_GET['course_id'];
 
 // Join with Course table to get course title and filter by course_id
-$sql = "SELECT l.*, c.title as course_title 
-        FROM Lesson l
-        JOIN Course c ON l.course_id = c.id
-        WHERE l.course_id = ?";
+$sql = "SELECT * FROM Lesson WHERE course_id = $course_id";
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $course_id);
