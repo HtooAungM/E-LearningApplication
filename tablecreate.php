@@ -21,33 +21,33 @@ if ($conn->query($studentTable) === TRUE) {
 }
 
 
-$instructorTable = "CREATE TABLE IF NOT EXISTS Instructor (
+$usertable = "CREATE TABLE IF NOT EXISTS User (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
     password VARCHAR(100) NOT NULL,
-    field_of_expertise VARCHAR(100) NOT NULL,
     gender VARCHAR(100) NOT NULL,
-    date_of_birth VARCHAR(100) NOT NULL
+    date_of_birth VARCHAR(100) NOT NULL,
+    user_type VARCHAR(100) NOT NULL
 )";
 
 // Execute the query
-if ($conn->query($instructorTable) === TRUE) {
-    echo "Table 'Instructor' created successfully.";
+if ($conn->query($usertable) === TRUE) {
+    echo "Table 'User' created successfully.";
 } else {
     echo "Error creating table: " . $conn->error;
 }
 
 $courseTable = "CREATE TABLE IF NOT EXISTS Course (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    instructor_id INT NOT NULL,
+    user_id INT NOT NULL,
     title VARCHAR(100) NOT NULL,
     image TEXT NOT NULL,
     duration_in_hours VARCHAR(100) NOT NULL,
     level VARCHAR(100) NOT NULL,
     price INT NOT NULL,
     category VARCHAR(100) NOT NULL,
-    FOREIGN KEY (instructor_id) REFERENCES Instructor(id)
+    FOREIGN KEY (user_id) REFERENCES User(id)
 )";
 
 // Execute the query
@@ -73,18 +73,30 @@ if ($conn->query($lessonTable) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
+$paymentTable = "CREATE TABLE IF NOT EXISTS Payment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    payment_method VARCHAR(100) NOT NULL,
+    payment_date DATETIME DEFAULT CURRENT_TIMESTAMP
+)";
+
+// Execute the query
+if ($conn->query($paymentTable) === TRUE) {
+    echo "Table 'Payment' created successfully.";   
+} else {
+    echo "Error creating table: " . $conn->error;
+}
 
 $enrollmentTable = "CREATE TABLE IF NOT EXISTS Enrollment (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id INT NOT NULL,
     course_id INT NOT NULL,
+    payment_id INT NOT NULL,
     date_of_enrollment VARCHAR(100) NOT NULL,
     progress_percentage INT NOT NULL,
     is_enrolled BOOLEAN NOT NULL,
     FOREIGN KEY (student_id) REFERENCES Student(id),
-    FOREIGN KEY (course_id) REFERENCES Course(id)
-
-
+    FOREIGN KEY (course_id) REFERENCES Course(id),
+    FOREIGN KEY (payment_id) REFERENCES Payment(id)
 )";
 
 // Execute the query
@@ -93,6 +105,7 @@ if ($conn->query($enrollmentTable) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
+
 
 // Create Quiz table
 $sql = "CREATE TABLE IF NOT EXISTS Quiz (
@@ -141,6 +154,7 @@ if ($conn->query($answerTable) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
+
 
 // Close the connection
 $conn->close();

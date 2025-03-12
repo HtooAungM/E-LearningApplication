@@ -52,11 +52,34 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $quiz_id);
 $stmt->execute();
 $result = $stmt->get_result();
+
+// Add this after your existing includes and before the HTML
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['update_id']) && !isset($_POST['delete_id'])) {
+    $question_text = $_POST['question_text'];
+    $option1 = $_POST['option1'];
+    $option2 = $_POST['option2'];
+    $option3 = $_POST['option3'];
+    $option4 = $_POST['option4'];
+    $correct_answer = $_POST['correct_answer'];
+
+    $insertSql = "INSERT INTO Question (quiz_id, question_text, option1, option2, option3, option4, correct_answer) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($insertSql);
+    $stmt->bind_param("issssss", $quiz_id, $question_text, $option1, $option2, $option3, $option4, $correct_answer);
+    
+    if ($stmt->execute()) {
+        header("Location: getQuestion.php?quiz_id=" . $quiz_id);
+        exit();
+    } else {
+        echo "<script>alert('Error adding question: " . $stmt->error . "');</script>";
+    }
+}
 ?>
 
 <a href="getQuiz.php" class="back-arrow">Back to Quizzes</a>
 
 <h1>Questions for Quiz: <?php echo htmlspecialchars($quiz['title']); ?></h1>
+<a href="#" class="action-button" onclick="showAddQuestionModal()">Add New Question</a>
 
 <?php if ($result->num_rows > 0): ?>
     <table>
@@ -130,6 +153,26 @@ $result = $stmt->get_result();
     </div>
 </div>
 
+<!-- Add Question Modal -->
+<div id="addQuestionModal" class="modal">
+    <div class="modal-content">
+        <h2>Add New Question</h2>
+        <form method="POST">
+            <input type="hidden" name="quiz_id" value="<?php echo $quiz_id; ?>">
+            <textarea name="question_text" placeholder="Question Text" required></textarea>
+            <input type="text" name="option1" placeholder="Option 1" required>
+            <input type="text" name="option2" placeholder="Option 2" required>
+            <input type="text" name="option3" placeholder="Option 3" required>
+            <input type="text" name="option4" placeholder="Option 4" required>
+            <input type="text" name="correct_answer" placeholder="Correct Answer" required>
+            <div class="modal-buttons">
+                <button type="button" class="cancel-btn" onclick="hideAddQuestionModal()">Cancel</button>
+                <button type="submit" class="confirm-btn">Add Question</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     function showEditModal(data) {
         document.getElementById('editModal').style.display = 'block';
@@ -160,6 +203,14 @@ $result = $stmt->get_result();
         if (event.target.className === 'modal') {
             event.target.style.display = 'none';
         }
+    }
+
+    function showAddQuestionModal() {
+        document.getElementById('addQuestionModal').style.display = 'block';
+    }
+
+    function hideAddQuestionModal() {
+        document.getElementById('addQuestionModal').style.display = 'none';
     }
 </script>
 

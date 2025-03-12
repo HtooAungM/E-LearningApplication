@@ -19,6 +19,7 @@ $result = $conn->query($sql);
 ?>
 
 <h1>Quiz List</h1>
+<a href="#" class="action-button" onclick="showAddModal()">Add New Quiz</a>
 
 <?php if ($result->num_rows > 0): ?>
     <table>
@@ -53,6 +54,20 @@ $result = $conn->query($sql);
 <?php else: ?>
     <p>No quizzes found.</p>
 <?php endif; ?>
+
+<!-- Add Quiz Modal -->
+<div id="addModal" class="modal">
+    <div class="modal-content">
+        <h2>Add New Quiz</h2>
+        <form method="POST">
+            <input type="text" name="title" placeholder="Quiz Title" required>
+            <div class="modal-buttons">
+                <button type="button" class="cancel-btn" onclick="hideAddModal()">Cancel</button>
+                <button type="submit" class="confirm-btn">Add Quiz</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <!-- Edit Modal -->
 <div id="editModal" class="modal">
@@ -100,6 +115,14 @@ $result = $conn->query($sql);
 
     function hideDeleteModal() {
         document.getElementById('deleteModal').style.display = 'none';
+    }
+
+    function showAddModal() {
+        document.getElementById('addModal').style.display = 'block';
+    }
+
+    function hideAddModal() {
+        document.getElementById('addModal').style.display = 'none';
     }
 
     // Close modals when clicking outside

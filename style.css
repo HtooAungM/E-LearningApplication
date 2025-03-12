@@ -12,6 +12,85 @@ body {
     min-height: 100vh;
 }   
 
+/* Login Page Styles */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+}
+
+.auth-box {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.auth-box h1 {
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    color: #333;
+}
+
+.auth-form .form-group {
+    margin-bottom: 15px;
+}
+
+.auth-form input {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.auth-button {
+    width: 95%;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.auth-button:hover {
+    background-color: #0d47a1;
+}
+
+.auth-links {
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.auth-links a {
+    color: #2196F3;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+/* Success & Error Messages */
+.success {
+    color: green;
+    font-weight: bold;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+}
+
 
 /* Sidebar Styles */
 .sidebar {
@@ -175,6 +254,125 @@ tr:hover {
     background-color: #f1f1f1;
     transition: background-color 0.3s ease;
 }
+/*Courses*/
+/* Course Header */
+.course-header {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* Course Image */
+.course-image {
+    flex: 0 0 250px;
+    height: 250px;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.course-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Course Info */
+.course-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.course-info h1 {
+    font-size: 2.2em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.course-meta {
+    display: flex;
+    gap: 15px;
+}
+
+.category-badge,
+.level-badge {
+    background-color: #2196F3;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.instructor-info {
+    font-size: 1em;
+    color: #555;
+}
+
+.course-stats {
+    display: flex;
+    gap: 30px;
+}
+
+.stat-item {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    font-size: 1.1em;
+    color: #333;
+}
+
+.duration-icon, .price-icon {
+    font-size: 1.3em;
+}
+
+/* Back Arrow Styles */
+.back-arrow {
+    display: inline-flex;
+    align-items: center;
+    color: #333;
+    text-decoration: none;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    transition: color 0.3s ease;
+}
+
+.back-arrow:hover {
+    color: #2196F3;
+}
+
+.back-arrow::before {
+    content: '←';
+    margin-right: 8px;
+    font-size: 1.2em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .course-header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .course-image {
+        width: 100%;
+        height: auto;
+    }
+
+    .course-info {
+        padding: 20px;
+    }
+
+    .course-stats {
+        flex-direction: column;
+    }
+
+    .stat-item {
+        font-size: 1em;
+    }
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -277,6 +475,7 @@ tr:hover {
 }
 
 .confirm-btn {
+    height: 40px;
     background-color: #4CAF50;
     color: white;
 }
