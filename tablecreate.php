@@ -28,7 +28,8 @@ $usertable = "CREATE TABLE IF NOT EXISTS User (
     password VARCHAR(100) NOT NULL,
     gender VARCHAR(100) NOT NULL,
     date_of_birth VARCHAR(100) NOT NULL,
-    user_type VARCHAR(100) NOT NULL
+    user_type VARCHAR(100) NOT NULL,
+    degree TEXT
 )";
 
 // Execute the query
@@ -153,6 +154,43 @@ if ($conn->query($answerTable) === TRUE) {
     echo "Table 'Answer' created successfully.";   
 } else {
     echo "Error creating table: " . $conn->error;
+}
+
+// Create Discussion Table
+$discussionTable = "CREATE TABLE IF NOT EXISTS Discussion (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    is_anonymous BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (student_id) REFERENCES Student(id) ON DELETE CASCADE
+)";
+
+// Execute the query for Discussion Table
+if ($conn->query($discussionTable) === TRUE) {
+    echo "Table 'Discussion' created successfully.<br>";
+} else {
+    echo "Error creating table 'Discussion': " . $conn->error . "<br>";
+}
+
+// Create Comment Table
+$commentTable = "CREATE TABLE IF NOT EXISTS Comment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    discussion_id INT NOT NULL,
+    student_id INT NOT NULL,
+    comment TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_anonymous BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (discussion_id) REFERENCES Discussion(id) ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES Student(id) ON DELETE CASCADE
+)";
+
+// Execute the query for Comment Table
+if ($conn->query($commentTable) === TRUE) {
+    echo "Table 'Comment' created successfully.<br>";
+} else {
+    echo "Error creating table 'Comment': " . $conn->error . "<br>";
 }
 
 
